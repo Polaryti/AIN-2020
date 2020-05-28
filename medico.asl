@@ -75,7 +75,7 @@
 +objetivoLocalizado
 	<-	
 	.print("He visualizado al enemigo.");
-	.get_service("instrucciones");
+	.get_service("general");
 	?general(General);
 	.send(General, tell, solicitandoInstrucciones(Position));
 	.look_at(Position);
