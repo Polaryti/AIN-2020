@@ -36,14 +36,17 @@
 	+solicitandoSalud.
 
 /* Difusion de solicitud de paquete de salud */
-+myMedics(M): solicitandoSalud
++solicitandoSalud
 	<-
+	.get_service("general");
+	general(General);
+	
 	.print("Agente solicitando un paquete de vida.");
 	?position(Pos);
 	-+medicoPOS([]);
 	-+medicoID([]);
-	.send(M, tell, solicitudDeSalud(Pos));
-	.wait(1000);
+	.send(General, tell, solicitudDeSalud(Pos));
+	.wait(1500);
 	!!elegirMedico;
 	-myMedics(_).
 
