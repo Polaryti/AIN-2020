@@ -68,6 +68,7 @@
 	.goto(P);
 	-ayudando(A, Pos).
 	
+/*VISUALIZA UN ENEMIGO*/	
 +enemies_in_fov(ID, Type, Angle, Distance, Health, Position)
 	<-
 	+objetivoLocalizado.
@@ -77,7 +78,7 @@
 	.print("He visualizado al enemigo.");
 	.get_service("general");
 	?general(General);
-	.send(General, tell, solicitandoInstrucciones(Position));
+	.send(General, tell, solicitudDeInstrucciones(Position));
 	.look_at(Position);
     .shoot(10, Position);
 	.wait(1000).

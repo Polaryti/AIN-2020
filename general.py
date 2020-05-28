@@ -43,7 +43,7 @@ class BDIGeneral(BDIFieldOp):
         return distancia_a_cada_agente.index(distancia_aux[0])
 
 
-    @actions.add(".operativoMasCerca", (list, ))
+    @actions.add(".operativoMasCerca", (tuple,list, ))
     def _operativo_mas_cercano(pos_sol, posiciones_agentes):
         '''
         Recibe dos parametros:

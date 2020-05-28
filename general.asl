@@ -75,6 +75,7 @@
 	<-
 	.print("Ningún médico puede ayudar.");
 	-solicitandoSalud.
+	
 
 
 
@@ -121,3 +122,26 @@
 	<-
 	.print("Ningún operativo puede ayudar.");
 	-solicitandoMunicion.
+	
+/*ESTRATEGIA ATACANTE LOCALIZADO*/
+/*Recepción de la solicitude de instrucciones*/
++SolicitudeDeInstrucciones(Pos)[source(A)]: not solicitandoInstrucciones
+	<-
+	+D=[];
+	/*Faltaria modificar agentes más cercanos para que devuelva */
+	/*	sólo 1 o 2 personas de cada tipo*/
+	+solicitandoInstrucciones;
+	.get_medics
+	?myMedics(M);
+	.agentesMasCercanos(Pos,M,R);
+	.concat(D,R,D);
+	.get_fieldops;
+	?myFieldops(F);
+	.agentesMasCercanos(Pos,F,R);
+	.concat(D,R,D);
+	.get_backups;
+	?myBackups(B);
+	.agentesMasCercanos(Pos,B,R);
+	.concat(D,R,D);
+	.send(D,tell,Atacad(Pos));
+	
