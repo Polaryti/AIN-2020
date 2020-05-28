@@ -1,0 +1,67 @@
++!get_agent_to_aim
+	<- 
+	?fovObjects(FOVObjects); // ESTE METODO NO SE SI ESTA PERO ESTÁ enemies_in_fov() & friends_in_fov
+	.length(FOVObjects, Length);
+
+if (Length > 0) {
+    +bucle(0);
+	+blucle2(0);
+
+    -+aimed("false");
+
+    while (aimed("false") & bucle(X) & (X < Length)) {
+
+		// Coge de la lista FOVObjects el elemento n� X y lo pone en Object
+        .nth(X, FOVObjects, Object);
+        // Object structure
+        // [#, TEAM, TYPE, ANGLE, DISTANCE, HEALTH, POSITION ]
+        .nth(2, Object, Type);
+
+        //.println("Analizando objeto: ", Object);
+
+        if (Type > 1000) {
+            //.println("I found some object.");
+        } else {
+            // Object may be an enemy
+            .nth(1, Object, Team);
+            ?my_formattedTeam(MyTeam);
+
+            if (Team == 200) {  // If he is an enemy...
+
+				//.println("Aiming an enemy...");
+				+aimed_agent(Object);
+				-+aimed("true");
+				.println("Atacando a: ",Team);
+
+				// Evitamos el fuego amigo
+
+				while (aimed(A) & A == "true" & bucle2(Y) & (Y < Length)) {
+					// Coge de la lista FOVObjects el elemento n�Y y lo pone en Object2
+					.nth(Y, FOVObjects, Object2);
+					if(not(X==Y)) {
+						// Object structure
+						// [#, TEAM, TYPE, ANGLE, DISTANCE, HEALTH, POSITION ]
+						.nth(3, Object2, Angle2);
+						.nth(3, Object, Angle1);
+						if((Angle1-Angle2) < 0.35 & (Angle1-Angle2) > -0.35) {
+							.nth(4, Object2, Distance2);
+							.nth(4, Object, Distance1);
+							if(Distance1>=Distance2) {
+								.nth(1, Object2, Team2);
+								if(100==Team2) { // Si es un aliado...
+									.println("Dejando de atacar por: ",Team2);
+									-+aimed("false");
+								}
+							}
+						}
+					}
+					-+bucle2(Y+1);
+				}
+				-+bucle2(0);
+            }
+        }
+        -+bucle(X+1);
+    }
+}
+-bucle(_).
+-bucle2(_).
