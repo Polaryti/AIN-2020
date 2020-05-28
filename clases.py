@@ -21,15 +21,13 @@ class AgenteDefensivo(BDIMedic):
     def add_custom_actions(self, actions):
         super().add_custom_actions(actions)
 
-    @actions.add(".medicoMasCerca", 0)
-    def _medico_mas_cercano(agent, term, intention):
+    @actions.add(".medicoMasCerca", (list, ))
+    def _medico_mas_cercano(posiciones_agentes):
         '''
         Recibe un parametro: La lista de las posiciones de los agentes.
         
         return: La posición del agente más cercano.
         '''
-        # Lista de médicos que han respondido
-        posiciones_agentes = 'parametro de entrada'
         # Posición del agente que solicita ayuda
         posicion_propia = agent.movement.position
         # Lista resultado de distancia a cada agente
@@ -45,18 +43,16 @@ class AgenteDefensivo(BDIMedic):
         distancia_aux = sorted(distancia_a_cada_agente)
         # Si este método se activa siempre habrá, al menos, un médico
         # Devolvemos la posicón del agente más cercano
-        yield distancia_a_cada_agente.index(distancia_aux[0])
+        return distancia_a_cada_agente.index(distancia_aux[0])
 
 
-    @actions.add(".operativoMasCerca", 0)
-    def _operativo_mas_cercano(agent, term, intention):
+    @actions.add(".operativoMasCerca", (list, ))
+    def _operativo_mas_cercano(posiciones_agentes):
         '''
         Recibe un parametro: La lista de las posiciones de los agentes.
         
         return: La posición del agente más cercano.
         '''
-        # Lista de operativos que han respondido
-        posiciones_agentes = 'parametro de entrada'
         # Posición del agente que solicita ayuda
         posicion_propia = agent.movement.position
         # Lista resultado de distancia a cada agente
@@ -72,4 +68,30 @@ class AgenteDefensivo(BDIMedic):
         distancia_aux = sorted(distancia_a_cada_agente)
         # Si este método se activa siempre habrá, al menos, un operativo
         # Devolvemos la posicón del agente más cercano
-        yield distancia_a_cada_agente.index(distancia_aux[0])
+        return distancia_a_cada_agente.index(distancia_aux[0])
+
+
+    @actions.add(".agentesMasCercanos", (list, list, ))
+    def _agentes_mas_cercanos(posiciones_agentes, posicion_enemigo):
+        '''
+        Recibe dos parametro: La lista de las posiciones de los agentes y la posción del agente enemigo.
+        
+        return: La posición del agente más cercano.
+        '''
+        # Lista resultado de distancia a cada agente
+        distancia_a_cada_agente = []
+        
+        # Recorremos la lista de agentes
+        for posicion_agente in posiciones_agentes:
+            # No tenemos en cuenta la componente Y
+            distancia_a_cada_agente += math.sqrt(math.pow(
+                posicion_agente[0] - posicion_enemigo[0], 2) + math.pow(posicion_agente[2] - posicion_enemigo[2], 2))
+
+        # Ordenamos de menor a mayor
+        distancia_aux = sorted(distancia_a_cada_agente)
+        # Si este método se activa siempre habrá, al menos, un operativo
+        # Devolvemos la posicón del agente más cercano
+        res = []
+        res += distancia_a_cada_agente.index(distancia_aux[0])
+        res += distancia_a_cada_agente.index(distancia_aux[1])
+        return distancia_a_cada_agente.index(distancia_aux[0])
