@@ -104,20 +104,20 @@
 	
 
 /* PLANES */
-/* Plan para elegir el médico más cercano */
+/* Plan para elegir el operativo más cercano */
 +!elegirOperativo: operativoPOS(Bi) & operativoID(Ag)
 	<-
 	.print("Selecciono el mejor: ", Bi, Ag);
-	.medicoMasCerca(Bi, medico);  // Guarda en medico la posición del medico elegido
-	.nth(medico, Ag, A);
+	.operativoMasCerca(Bi, medico);  // Guarda en operativo la posición del operativo elegido
+	.nth(operativo, Ag, A);
 	.send(A, tell, solicitudAceptad);
-	.delete(medico, Ag, Ag1);
+	.delete(operativo, Ag, Ag1);
 	.send(Ag1, tell, solicitudDenegada);
 	-+operativoPOS([]);
 	-+operativoID([]);
 	-solicitandoMunicion.
 	
-/* Plan para cuando no hay ningún médico que pueda ayudar */
+/* Plan para cuando no hay ningún operativo que pueda ayudar */
 +!elegirOperativo: not (operativoPOS(Bi))
 	<-
 	.print("Ningún operativo puede ayudar.");
