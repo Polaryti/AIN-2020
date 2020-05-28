@@ -60,4 +60,4 @@
 	.reload;
 	?miPosition(P); // Esto no lo veo, falta algo
 	.goto(P);
-	-ayudando(A, Pos).
+	-ayudando(A, Pos). 

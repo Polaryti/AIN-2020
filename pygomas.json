@@ -9,7 +9,7 @@
             "rank": "BDISoldier",
             "name": "axis_macammoc",
             "password": "secret",
-            "amount": 8,
+            "amount": 7,
             "asl": "bdisoldier.asl"
         },
         {
@@ -23,6 +23,12 @@
             "name": "fieldop_axis_macammoc",
             "password": "secret",
             "asl": "bdifieldop.asl"
+        },
+		{
+            "rank": "general.BDIGeneral",
+            "name": "general_axis_macammoc",
+            "password": "secret",
+            "asl": "general.asl"
         }
     ],
      "allied": [

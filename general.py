@@ -12,7 +12,7 @@ from pygomas.ontology import HEALTH
 
 from pygomas.agent import LONG_RECEIVE_WAIT
 
-class BDITropa(BDIFieldOp):
+class BDIGeneral(BDIFieldOp):
 
         def add_custom_actions(self, actions):
             super().add_custom_actions(actions)
