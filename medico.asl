@@ -67,3 +67,17 @@
 	?miPosition(P); // Esto no lo veo, falta algo
 	.goto(P);
 	-ayudando(A, Pos).
+	
++enemies_in_fov(ID, Type, Angle, Distance, Health, Position)
+	<-
+	+objetivoLocalizado.
+	
++objetivoLocalizado
+	<-	
+	.print("He visualizado al enemigo.");
+	.get_service("instrucciones")
+	?general(General)
+	.send(General, tell, solicitandoInstrucciones(Position));
+	.look_at(Position);
+    .shoot(10, Position);
+	.wait(1000)
