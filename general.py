@@ -120,6 +120,39 @@ class BDIGeneral(BDIFieldOp):
             
         # /** TODO **/
         return target
-    
         
+    
+    @actions.add(".circuloInterior", (list, ))
+    def _circulo_interior(posicion_bandera):
+        '''
+        Recibe un parametro: La posicición de la bandera.
+        
+        return: La lista de puntos de patrulla en circulo interior.
+        '''
+        # Distancia de creación del círculo
+        distancia_de_circulo = 10
 
+        punto_A = [posicion_bandera[0] - distancia_de_circulo, posicion_bandera[1], posicion_bandera[2]]
+        punto_B = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] - distancia_de_circulo]
+        punto_C = [posicion_bandera[0] + distancia_de_circulo, posicion_bandera[1], posicion_bandera[2]]
+        punto_D = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] + distancia_de_circulo]
+
+        return [punto_A, punto_B, punto_C, punto_D]
+
+
+    @actions.add(".circuloExterior", (list, ))
+    def _circulo_exterior(posicion_bandera):
+        '''
+        Recibe un parametro: La posicición de la bandera.
+        
+        return: La lista de puntos de patrulla en circulo exterior.
+        '''
+        # Distancia de creación del círculo
+        distancia_de_circulo = 20
+
+        punto_A = [posicion_bandera[0] - distancia_de_circulo, posicion_bandera[1], posicion_bandera[2]]
+        punto_B = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] - distancia_de_circulo]
+        punto_C = [posicion_bandera[0] + distancia_de_circulo, posicion_bandera[1], posicion_bandera[2]]
+        punto_D = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] + distancia_de_circulo]
+
+        return [punto_A, punto_B, punto_C, punto_D]
