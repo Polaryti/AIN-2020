@@ -67,4 +67,3 @@
 	?miPosition(P); // Esto no lo veo, falta algo
 	.goto(P);
 	-ayudando(A, Pos).
-  

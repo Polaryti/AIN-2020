@@ -78,3 +78,54 @@
 	<-
 	.print("Ningún médico me puede ayudar.");
 	-solicitandoSalud.
+
+
+// ESTRATEGIA DE RECEPCIÓN Y ENVIAMIENTO DE SOLICITUDES DE AYUDA DE MUNICIÓN
+/* Creencia que dispara la estrategia */
++ammo(A): A < 20 & not solicitandoMunicion
+	<-
+	+solicitandoMunicion.
+
+/* Difusion de solicitud de paquete de munición */
++myFieldops(M): solicitandoMunicion
+	<-
+	.print("Agente solicitando un paquete de munición.");
+	?position(Pos);
+	-+operativoPOS([]);
+	-+operativoID([]);
+	.send(M, tell, solicitudDeMunicion(Pos));
+	.wait(1000);
+	!!elegirOperativo;
+	-myFieldops(_).
+
+/* Concateno la posición y el ID de los operativos que responden */
++respuestaVida(Pos)[source(A)]: solicitandoMunicion
+	<-
+	.print("Recibo propuesta.");
+	?operativoPOS(B);
+	.concat(B, [Pos], B1); -+operativoPOS(B1);
+	?operativoID(Ag);
+	.concat(Ag, [A], Ag1); -+operativoID(Ag1);
+	-respuestaMunicion(Pos).
+	
+
+/* PLANES */
+/* Plan para elegir el operativo más cercano */
++!elegirOperativo: operativoPOS(Bi) & operativoID(Ag)
+	<-
+	.print("Selecciono el mejor: ", Bi, Ag);
+	.operativoMasCerca(Bi, operativo);  // Guarda en operativo la posición del operativo elegido
+	.nth(operativo, Bi, Pos); // Esto no haria falta ¿?
+	.nth(operativo, Ag, A);
+	.send(A, tell, solicitudAceptad);
+	.delete(operativo, Ag, Ag1);
+	.send(Ag1, tell, solicitudDenegada);
+	-+operativoPOS([]);
+	-+operativoID([]);
+	-solicitandoMunicion.
+	
+/* Plan para cuando no hay ningún médico que me pueda ayudar */
++!elegirOperativo: not (operativoPOS(Bi))
+	<-
+	.print("Ningún operativo me puede ayudar.");
+	-solicitandoMunicion.
