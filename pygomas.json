@@ -9,20 +9,22 @@
             "rank": "BDISoldier",
             "name": "axis_macammoc",
             "password": "secret",
-            "amount": 7,
-            "asl": "bdisoldier.asl"
+            "amount": 5,
+            "asl": "soldado.asl"
         },
         {
             "rank": "BDIMedic",
             "name": "medic_axis_macammoc",
             "password": "secret",
-            "asl": "bdimedic.asl"
+			"amount": 2,
+            "asl": "medico.asl"
         },
          {
             "rank": "BDIFieldOp",
             "name": "fieldop_axis_macammoc",
             "password": "secret",
-            "asl": "bdifieldop.asl"
+			"amount": 2,
+            "asl": "operativo.asl"
         },
 		{
             "rank": "general.BDIGeneral",
