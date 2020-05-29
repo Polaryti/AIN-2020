@@ -93,7 +93,6 @@ class BDIGeneral(BDIFieldOp):
         # Devolvemos la posicón del agente más cercano
         res = []
         res += distancia_a_cada_agente.index(distancia_aux[0])
-        res += distancia_a_cada_agente.index(distancia_aux[1])
 
         return res
 
