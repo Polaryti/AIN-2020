@@ -9,14 +9,14 @@
             "rank": "BDISoldier",
             "name": "axis_macammoc",
             "password": "secret",
-            "amount": 5,
+            "amount": 4,
             "asl": "soldado.asl"
         },
         {
             "rank": "BDIMedic",
             "name": "medic_axis_macammoc",
             "password": "secret",
-			"amount": 2,
+			"amount": 3,
             "asl": "medico.asl"
         },
          {
