@@ -82,3 +82,23 @@
 	.look_at(Position);
     .shoot(10, Position);
 	.wait(1000).
+	
++solicitudDeColmena(Pos)[source(A)]: not (ayudandoc(_))
+	<-
+	?position(MiPos);
+	.send(A, tell, respuestaColmenaM(MiPos));
+	+ayudandoc(Pos);
+	-solicitudDeColmena(_);
+	.print("enviada propuesta de apoyo").
+	
+/* Me aceptan la respuesta de solicitud de apoyo */
++solicitudAceptadaC[source(A)]: ayudandoc(Pos)
+	<-
+	.print("Yendo a ", Pos," a matar");
+	.goto(Pos).
+	
+/* Me rechazan la respuesta de solicitud de ayuda */
++solicitudDenegadaC[source(A)]: ayudandoc(Pos)
+	<-
+	.print("Nada, a seguir dándo vueltas");
+	-ayudandoc(Pos).

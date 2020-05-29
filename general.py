@@ -69,8 +69,36 @@ class BDIGeneral(BDIFieldOp):
         return distancia_a_cada_agente.index(distancia_aux[0])
 
 
-    @actions.add(".agentesMasCercanos", (list, list, ))
-    def _agentes_mas_cercanos(pos_ene, posiciones_agentes):
+    @actions.add(".agentesMasCercanos1", (list, list, ))
+    def _agentes_mas_cercanos1(pos_ene, posiciones_agentes):
+        '''
+        Recibe dos parametros:
+            pos_ene: Posicion del agente enemigo detectado.
+            posicion_agentes: La lista de las posiciones de los agentes.
+        
+        return: La posición del agente más cercano.
+        '''
+        # Lista resultado de distancia a cada agente
+        distancia_a_cada_agente = []
+        
+        # Recorremos la lista de agentes
+        for posicion_agente in posiciones_agentes:
+            # No tenemos en cuenta la componente Y
+            distancia_a_cada_agente += math.sqrt(math.pow(
+                posicion_agente[0] - pos_ene[0], 2) + math.pow(posicion_agente[2] - pos_ene[2], 2))
+
+        # Ordenamos de menor a mayor distancia Euclidea
+        distancia_aux = sorted(distancia_a_cada_agente)
+        # Si este método se activa siempre habrá, al menos, un operativo
+        # Devolvemos la posicón del agente más cercano
+        res = []
+        res += distancia_a_cada_agente.index(distancia_aux[0])
+        res += distancia_a_cada_agente.index(distancia_aux[1])
+
+        return res
+
+    @actions.add(".agentesMasCercanos2", (list, list, ))
+    def _agentes_mas_cercanos2(pos_ene, posiciones_agentes):
         '''
         Recibe dos parametros:
             pos_ene: Posicion del agente enemigo detectado.

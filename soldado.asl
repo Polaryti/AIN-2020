@@ -91,7 +91,7 @@
 	
 
 
-/* ESTRATEGIA PARA IR EN COLMENA A POR UN ENEMIGO */
+//* ESTRATEGIA PARA IR EN COLMENA A POR UN ENEMIGO */
 /* Visualizo un enemigo y no he avisado al General */	
 +enemies_in_fov(_, _, _, _, _, Position): not colmena(_) & not atacando
 	<-
@@ -110,11 +110,27 @@
 	.look_at(Position);
     .shoot(3, Position);
 	.abolish(enemies_in_fov(_,_,_,_,_,_)).
-
-+
-
-/* El General me ha mandado la orden de atacar en colmena */
-+colmena(Pos): not colmena(_) & not atacando
+	
++objetivoLocalizado
+	<-	
+	.print("He visualizado al enemigo.");
+	.get_service("general");
+	?general(General);
+	.send(General, tell, solicitudDeInstrucciones(Position));
+	.look_at(Position);
+    .shoot(10, Position);
+	.wait(1000).
+	
++solicitudDeColmena(Pos)[source(A)]: not (ayudandoc(_))
+	<-
+	?position(MiPos);
+	.send(A, tell, respuestaColmenaS(MiPos));
+	+ayudandoc(Pos);
+	-solicitudDeColmena(_);
+	.print("enviada propuesta de apoyo").
+	
+/* Me aceptan la respuesta de solicitud de apoyo */
++solicitudAceptadaC[source(A)]: : not solicitudAceptadaC(_) & not atacando
 	<-
 	// Eliminamos las creencias de patrulla
 	-control_points(_);
@@ -124,9 +140,14 @@
 
 	+atacando;
 	.goto(Pos);
-	-colmena(_).
+	-solicitudAceptadaC(_).
 	
-
+/* Me rechazan la respuesta de solicitud de ayuda */
++solicitudDenegadaC[source(A)]: ayudandoc(Pos)
+	<-
+	.print("Nada, a seguir dándo vueltas");
+	-ayudandoc(Pos).
+	
 /* Llego al objetivo del ataque en colmena */
 +target_reached(Pos): atacando
 	<-
