@@ -1,14 +1,19 @@
 //TEAM_AXIS (defensa)
 
+/* Estrategia de patrulla en rombo */
 +flag (F): team(200)
   <-
-  .create_control_points(F,25,3,C);
-  +control_points(C);
-  .length(C,L);
-  +total_control_points(L);
-  +patrolling;
-  +patroll_point(0);
-  .print("Got control points").
+  +generarPatrulla.
+
++generarPatrulla
+	<-
+	.circuloExterior(F, C);
+	+control_points(C);
+	.length(C,L);
+	+total_control_points(L);
+	+patrolling;
+	+patroll_point(0);
+	-generarPatrulla.
 
 
 +target_reached(T): patrolling & team(200)
@@ -28,6 +33,8 @@
   -patroll_point(P);
   +patroll_point(0).
   
+
+
 
 /* ESTRATEGIA DE PAQUETES DE SALUD */
 /* Creencia que anula la estrategia */
@@ -51,6 +58,8 @@
 	?position(Pos);
 	.send(General, tell, solicitudDeSalud(Pos));
 	.wait(1500).
+
+
 
 
 
@@ -78,17 +87,47 @@
 	.wait(1500).
 
 
-/*VISUALIZA UN ENEMIGO*/	
-+enemies_in_fov(ID, Type, Angle, Distance, Health, Position)
-	<-
-	+objetivoLocalizado.
 	
-+objetivoLocalizado
-	<-	
-	.print("He visualizado al enemigo.");
-	.get_service("general");
+
+
+/* ESTRATEGIA PARA IR EN COLMENA A POR UN ENEMIGO */
+/* Visualizo un enemigo y no he avisado al General */	
++enemies_in_fov(_, _, _, _, _, Position): not colmena(_) & not atacando
+	<-
 	?general(General);
 	.send(General, tell, solicitudDeInstrucciones(Position));
+	// Mientras espera ordenes, ataca
 	.look_at(Position);
-    .shoot(10, Position);
+    .shoot(3, Position);
+	.abolish(enemies_in_fov(_,_,_,_,_,_));
+	// Para no sobrecargar al General
 	.wait(1000).
+
+/* Visualizo un enemigo */
++enemies_in_fov(_, _, _, _, _, Position)
+	<-
+	.look_at(Position);
+    .shoot(3, Position);
+	.abolish(enemies_in_fov(_,_,_,_,_,_)).
+
+/* El General me ha mandado la orden de atacar en colmena */
++colmena(Pos): not colmena(_) & not atacando
+	<-
+	// Eliminamos las creencias de patrulla
+	-control_points(_);
+	-total_control_points(_);
+	-patrolling;
+	-patroll_point(_);
+
+	+atacando;
+	.goto(Pos);
+	-colmena(_).
+	
+
+/* Llego al objetivo del ataque en colmena */
++target_reached(Pos): atacando
+	<-
+	-atacando;
+	// Volvemos a generar las coordenadas de la patrulla en rombo (por si se ha movido la bandera)
+	.generarPatrulla.
+	

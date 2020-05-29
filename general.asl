@@ -36,13 +36,13 @@
 /* Recibo solictud de ayuda */
 +solicitudDeSalud(Pos)[source(A)]: not solicitandoSalud
 	<-
-  +solicitandoSalud;
-  .myMedics(M);
+	+solicitandoSalud;
+	.myMedics(M);
 	-+medicoPOS([]);
 	-+medicoID([]);
 	.send(M, tell, solicitudDeSalud(Pos));
 	.wait(900);
-  !!elegirMedico.
+	!!elegirMedico.
 
 
 /* Concateno la posición y el ID de los médicos que responden */
@@ -123,25 +123,31 @@
 	.print("Ningún operativo puede ayudar.");
 	-solicitandoMunicion.
 	
-/*ESTRATEGIA ATACANTE LOCALIZADO*/
+
+
+/* ESTRATEGIA PARA IR EN COLMENA A POR UN ENEMIGO */
 /*Recepción de la solicitude de instrucciones*/
 +SolicitudeDeInstrucciones(Pos)[source(A)]: not solicitandoInstrucciones
 	<-
-	+D=[];
-	/*Faltaria modificar agentes más cercanos para que devuelva */
-	/*	sólo 1 o 2 personas de cada tipo*/
+	//+D=[]; <- ¿Que hace esto?
+	/*	Faltaria modificar agentes más cercanos para que devuelva
+		sólo 1 o 2 personas de cada tipo */
 	+solicitandoInstrucciones;
-	.get_medics
+	// Obtiene los médicos más cercanos
+	.get_medics;
 	?myMedics(M);
 	.agentesMasCercanos(Pos,M,R);
 	.concat(D,R,D);
+	// Obtiene los operativos más cercanos
 	.get_fieldops;
 	?myFieldops(F);
 	.agentesMasCercanos(Pos,F,R);
 	.concat(D,R,D);
+	// Obtiene los soldados más cercanos
 	.get_backups;
 	?myBackups(B);
 	.agentesMasCercanos(Pos,B,R);
 	.concat(D,R,D);
-	.send(D,tell,Atacad(Pos));
+	
+	.send(D,tell, colmena(Pos)).
 	
