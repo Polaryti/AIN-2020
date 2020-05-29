@@ -7,7 +7,7 @@ from pygomas.bditroop import BDITroop
 from pygomas.bdisoldier import BDISoldier
 from agentspeak import Actions
 from agentspeak import grounded
-from agentspeak.stdlib import actions
+from agentspeak.stdlib import actions 
 from pygomas.ontology import HEALTH
 
 from pygomas.agent import LONG_RECEIVE_WAIT
