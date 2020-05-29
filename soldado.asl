@@ -130,7 +130,7 @@
 	.print("enviada propuesta de apoyo").
 	
 /* Me aceptan la respuesta de solicitud de apoyo */
-+solicitudAceptadaC[source(A)]: : not solicitudAceptadaC(_) & not atacando
++solicitudAceptadaC[source(A)]: not solicitudAceptadaC(_) & not atacando
 	<-
 	// Eliminamos las creencias de patrulla
 	-control_points(_);
@@ -153,4 +153,4 @@
 	<-
 	-atacando;
 	// Volvemos a generar las coordenadas de la patrulla en rombo (por si se ha movido la bandera)
-	.generarPatrulla.
+	!generarPatrulla.

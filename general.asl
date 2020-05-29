@@ -1,7 +1,9 @@
 //TEAM_AXIS
 
+
 +flag (F): team(200) 
   <-
+  .register_service("general");
   .create_control_points(F,25,3,C);
   +control_points(C);
   .length(C,L);
@@ -223,10 +225,10 @@
 
 /* PLANES */
 /* Plan para elegir el médico más cercano */
-+!elegirEquipo(Pos): 
++!elegirEquipo(Pos)
 	<-
-	?medicoPOS(Ml)
-	?medicoID(Mi)
+	?medicoPOS(Ml);
+	?medicoID(Mi);
 	.agentesMasCercanos1(Pos, Ml, medico);  // Guarda en medico la posición del medico elegido
 	.nth(medico, Mi, A);
 	.send(A, tell, solicitudAceptadaC(Pos));
@@ -235,8 +237,8 @@
 	-+medicoPOS([]);
 	-+medicoID([]);
 	
-	?operaPOS(Fl)
-	?operaID(Fi)
+	?operaPOS(Fl);
+	?operaID(Fi);
 	.agentesMasCercanos1(Pos, Fl, fieldOp);  // Guarda en medico la posición del medico elegido
 	.nth(fieldOp, Fi, A);
 	.send(A, tell, solicitudAceptadaC(Pos));
@@ -245,8 +247,8 @@
 	-+operaPOS([]);
 	-+operaID([]);
 	
-	?soldadoPOS(Sl)
-	?soldadoID(Si)
+	?soldadoPOS(Sl);
+	?soldadoID(Si);
 	.agentesMasCercanos2(Pos, Sl, soldado);  // Guarda en medico la posición del medico elegido
 	.nth(soldado, Si, A);
 	.send(A, tell, solicitudAceptadaC(Pos));
@@ -258,7 +260,7 @@
 	-solicitandoAyuda.
 	
 /* Plan para cuando no hay ningún médico que pueda ayudar */
-+!elegirEquipo: 
++!elegirEquipo
 	<-
 	.print("Ningún médico puede ayudar.");
 	-solicitandoAyuda.

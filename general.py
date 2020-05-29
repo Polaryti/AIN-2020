@@ -7,17 +7,17 @@ from pygomas.bditroop import BDITroop
 from pygomas.bdisoldier import BDISoldier
 from agentspeak import Actions
 from agentspeak import grounded
-from agentspeak.stdlib import actions as asp_action
+from agentspeak.stdlib import actions
 from pygomas.ontology import HEALTH
 
 from pygomas.agent import LONG_RECEIVE_WAIT
 
-class BDIGeneral(BDIFieldOp):
+class BDIGeneral(BDISoldier):
 
     def add_custom_actions(self, actions):
         super().add_custom_actions(actions)
 
-    @actions.add(".medicoMasCerca", (tuple,list, ))
+    @actions.add_function(".medicoMasCerca", (tuple,list, ))
     def _medico_mas_cercano(pos_sol, posiciones_agentes):
         '''
         Recibe dos parametros:
@@ -43,7 +43,7 @@ class BDIGeneral(BDIFieldOp):
         return distancia_a_cada_agente.index(distancia_aux[0])
 
 
-    @actions.add(".operativoMasCerca", (tuple,list, ))
+    @actions.add_function(".operativoMasCerca", (tuple,list, ))
     def _operativo_mas_cercano(pos_sol, posiciones_agentes):
         '''
         Recibe dos parametros:
@@ -69,7 +69,7 @@ class BDIGeneral(BDIFieldOp):
         return distancia_a_cada_agente.index(distancia_aux[0])
 
 
-    @actions.add(".agentesMasCercanos1", (list, list, ))
+    @actions.add_function(".agentesMasCercanos1", (list, list, ))
     def _agentes_mas_cercanos1(pos_ene, posiciones_agentes):
         '''
         Recibe dos parametros:
@@ -96,7 +96,7 @@ class BDIGeneral(BDIFieldOp):
 
         return res
 
-    @actions.add(".agentesMasCercanos2", (list, list, ))
+    @actions.add_function(".agentesMasCercanos2", (list, list, ))
     def _agentes_mas_cercanos2(pos_ene, posiciones_agentes):
         '''
         Recibe dos parametros:
@@ -148,9 +148,15 @@ class BDIGeneral(BDIFieldOp):
         # /** TODO **/
         return target
         
-    
-    @actions.add(".circuloInterior", (list, ))
-    def _circulo_interior(posicion_bandera):
+
+
+
+class SoldadoPropio(BDISoldier):
+    def add_custom_actions(self, actions):
+        super().add_custom_actions(actions)
+        
+    @actions.add_function(".circuloInterior", (tuple))
+    def _circuloInterior(posicion_bandera):
         '''
         Recibe un parametro: La posicición de la bandera.
         
@@ -164,10 +170,10 @@ class BDIGeneral(BDIFieldOp):
         punto_C = [posicion_bandera[0] + distancia_de_circulo, posicion_bandera[1], posicion_bandera[2]]
         punto_D = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] + distancia_de_circulo]
 
-        return [punto_A, punto_B, punto_C, punto_D]
+        return tuple([tuple(punto_A), tuple(punto_B), tuple(punto_C), tuple(punto_D)])
 
 
-    @actions.add(".circuloExterior", (list, ))
+    @actions.add_function(".circuloExterior", (tuple))
     def _circulo_exterior(posicion_bandera):
         '''
         Recibe un parametro: La posicición de la bandera.
@@ -182,4 +188,4 @@ class BDIGeneral(BDIFieldOp):
         punto_C = [posicion_bandera[0] + distancia_de_circulo, posicion_bandera[1], posicion_bandera[2]]
         punto_D = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] + distancia_de_circulo]
 
-        return [punto_A, punto_B, punto_C, punto_D]
+        return tuple([tuple(punto_A), tuple(punto_B), tuple(punto_C), tuple(punto_D)])
