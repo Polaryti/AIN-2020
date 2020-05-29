@@ -68,10 +68,25 @@
 	.goto(P);
 	-ayudando(A, Pos).
 	
-/*VISUALIZA UN ENEMIGO*/	
-+enemies_in_fov(ID, Type, Angle, Distance, Health, Position)
+/* ESTRATEGIA PARA IR EN COLMENA A POR UN ENEMIGO */
+/* Visualizo un enemigo y no he avisado al General */	
++enemies_in_fov(_, _, _, _, _, Position): not colmena(_) & not atacando
 	<-
-	+objetivoLocalizado.
+	?general(General);
+	.send(General, tell, solicitudDeInstrucciones(Position));
+	// Mientras espera ordenes, ataca
+	.look_at(Position);
+    .shoot(3, Position);
+	.abolish(enemies_in_fov(_,_,_,_,_,_));
+	// Para no sobrecargar al General
+	.wait(1000).
+
+/* Visualizo un enemigo */
++enemies_in_fov(_, _, _, _, _, Position)
+	<-
+	.look_at(Position);
+    .shoot(3, Position);
+	.abolish(enemies_in_fov(_,_,_,_,_,_)).
 	
 +objetivoLocalizado
 	<-	
@@ -92,13 +107,27 @@
 	.print("enviada propuesta de apoyo").
 	
 /* Me aceptan la respuesta de solicitud de apoyo */
-+solicitudAceptadaC[source(A)]: ayudandoc(Pos)
++solicitudAceptadaC[source(A)]: : not solicitudAceptadaC(_) & not atacando
 	<-
-	.print("Yendo a ", Pos," a matar");
-	.goto(Pos).
+	// Eliminamos las creencias de patrulla
+	-control_points(_);
+	-total_control_points(_);
+	-patrolling;
+	-patroll_point(_);
+
+	+atacando;
+	.goto(Pos);
+	-solicitudAceptadaC(_).
 	
 /* Me rechazan la respuesta de solicitud de ayuda */
 +solicitudDenegadaC[source(A)]: ayudandoc(Pos)
 	<-
 	.print("Nada, a seguir dándo vueltas");
 	-ayudandoc(Pos).
+	
+/* Llego al objetivo del ataque en colmena */
++target_reached(Pos): atacando
+	<-
+	-atacando;
+	// Volvemos a generar las coordenadas de la patrulla en rombo (por si se ha movido la bandera)
+	.generarPatrulla.
