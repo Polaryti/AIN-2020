@@ -111,6 +111,8 @@
     .shoot(3, Position);
 	.abolish(enemies_in_fov(_,_,_,_,_,_)).
 
++
+
 /* El General me ha mandado la orden de atacar en colmena */
 +colmena(Pos): not colmena(_) & not atacando
 	<-

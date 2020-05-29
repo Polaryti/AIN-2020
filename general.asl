@@ -34,9 +34,9 @@
 
 /* ESTRATEGIA DE PAQUETES DE SALUD */
 /* Recibo solictud de ayuda */
-+solicitudDeSalud(Pos)[source(A)]: not solicitandoSalud
++solicitudDeSalud(Pos)[source(A)]: not solicitandoAyuda
 	<-
-	+solicitandoSalud;
+	+solicitandoAyuda;
 	.myMedics(M);
 	-+medicoPOS([]);
 	-+medicoID([]);
@@ -46,7 +46,7 @@
 
 
 /* Concateno la posición y el ID de los médicos que responden */
-+respuestaVida(Pos)[source(A)]: solicitandoSalud
++respuestaVida(Pos)[source(A)]: solicitandoAyuda
 	<-
 	.print("Recibo propuesta.");
 	?medicoPOS(B);
@@ -68,22 +68,22 @@
 	.send(Ag1, tell, solicitudDenegada);
 	-+medicoPOS([]);
 	-+medicoID([]);
-	-solicitandoSalud.
+	-solicitandoAyuda.
 	
 /* Plan para cuando no hay ningún médico que pueda ayudar */
 +!elegirMedico: not (medicoPOS(Bi))
 	<-
 	.print("Ningún médico puede ayudar.");
-	-solicitandoSalud.
+	-solicitandoAyuda.
 	
 
 
 
 /* ESTRATEGIA DE PAQUETES DE MUNICIÓN */
 /* Recibo solictud de ayuda */
-+solicitudDeMunicion(Pos)[source(A)]: not solicitandoMunicion
++solicitudDeMunicion(Pos)[source(A)]: not solicitandoAyuda
 	<-
-  +solicitandoMunicion;
+  +solicitandoAyuda;
   .myFieldops(M);
 	-+operativoPOS([]);
 	-+operativoID([]);
@@ -93,7 +93,7 @@
 
 
 /* Concateno la posición y el ID de los operativos que responden */
-+respuestaMunicion(Pos)[source(A)]: solicitandoMunicion
++respuestaMunicion(Pos)[source(A)]: solicitandoAyuda
 	<-
 	.print("Recibo propuesta.");
 	?operativoPOS(B);
@@ -115,39 +115,43 @@
 	.send(Ag1, tell, solicitudDenegada);
 	-+operativoPOS([]);
 	-+operativoID([]);
-	-solicitandoMunicion.
+	-solicitandoAyuda.
 	
 /* Plan para cuando no hay ningún operativo que pueda ayudar */
 +!elegirOperativo: not (operativoPOS(Bi))
 	<-
 	.print("Ningún operativo puede ayudar.");
-	-solicitandoMunicion.
+	-solicitandoAyuda.
 	
 
 
 /* ESTRATEGIA PARA IR EN COLMENA A POR UN ENEMIGO */
 /*Recepción de la solicitude de instrucciones*/
-+SolicitudeDeInstrucciones(Pos)[source(A)]: not solicitandoInstrucciones
++solicitudDeInstrucciones(Pos)[source(A)]: not solicitandoAyuda
 	<-
 	//+D=[]; <- ¿Que hace esto?
 	/*	Faltaria modificar agentes más cercanos para que devuelva
 		sólo 1 o 2 personas de cada tipo */
-	+solicitandoInstrucciones;
+	+solicitandoAyuda;
 	// Obtiene los médicos más cercanos
+	// TODO: Comunicarse con los médicos y decirle al médico más cercano que vaya ("send(Medico, tell, colmena(Pos))")
 	.get_medics;
 	?myMedics(M);
 	.agentesMasCercanos(Pos,M,R);
 	.concat(D,R,D);
 	// Obtiene los operativos más cercanos
+	// TODO: Comunicarse con los operativos y decirle al operativo más cercano que vaya ("send(Operativo, tell, colmena(Pos))")
 	.get_fieldops;
 	?myFieldops(F);
 	.agentesMasCercanos(Pos,F,R);
 	.concat(D,R,D);
 	// Obtiene los soldados más cercanos
+	// TODO: Comunicarse con los soldados y decirle a los soldados más cercanos que vayan ("send(Soldados, tell, colmena(Pos))")
 	.get_backups;
 	?myBackups(B);
 	.agentesMasCercanos(Pos,B,R);
 	.concat(D,R,D);
 	
-	.send(D,tell, colmena(Pos)).
+	.send(D,tell, colmena(Pos));
+	-solicitandoAyuda.
 	
