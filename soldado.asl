@@ -1,34 +1,36 @@
-//TEAM_AXIS (defensa)
+// SOLDADO EN DEFENSA (AXIS)
 
-/* Estrategia de patrulla en rombo */
-+flag (F): team(200)
+/* Creencia que se dispara cuando se inicia la partida */
++flag(F): team(200)
   <-
-  +generarPatrulla.
+  !generarPatrulla.
 
-+generarPatrulla
+
+/* ESTRATEGIA DE PATRULLA EN ROMBO (EXTERIOR) */
+/* Generamos unos puntos de control en rombo */
++!generarPatrulla
 	<-
+	?flag(F);
 	.circuloExterior(F, C);
 	+control_points(C);
-	.length(C,L);
+	.length(C, L);
 	+total_control_points(L);
 	+patrolling;
-	+patroll_point(0);
-	-generarPatrulla.
-
+	+patroll_point(0).
 
 +target_reached(T): patrolling & team(200)
   <-
   ?patroll_point(P);
-  -+patroll_point(P+1);
+  -+patroll_point(P + 1);
   -target_reached(T).
 
-+patroll_point(P): total_control_points(T) & P<T
++patroll_point(P): total_control_points(T) & P < T
   <-
   ?control_points(C);
-  .nth(P,C,A);
+  .nth(P, C, A);
   .goto(A).
 
-+patroll_point(P): total_control_points(T) & P==T
++patroll_point(P): total_control_points(T) & P == T
   <-
   -patroll_point(P);
   +patroll_point(0).
@@ -58,7 +60,6 @@
 	?position(Pos);
 	.send(General, tell, solicitudDeSalud(Pos));
 	.wait(1500).
-
 
 
 
@@ -130,4 +131,3 @@
 	-atacando;
 	// Volvemos a generar las coordenadas de la patrulla en rombo (por si se ha movido la bandera)
 	.generarPatrulla.
-	
