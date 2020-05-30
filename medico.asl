@@ -8,7 +8,6 @@
 
 +flag (F): team(200) 
   <-
-  .print(Grito);
   .create_control_points(F, 20, 5, C);
   +control_points(C);
   .length(C, L);

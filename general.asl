@@ -1,37 +1,16 @@
 //TEAM_AXIS
 
-
 +flag (F): team(200) 
   <-
   .register_service("general");
-  .create_control_points(F,25,3,C);
-  +control_points(C);
-  .length(C,L);
-  +total_control_points(L);
-  +patrolling;
-  +patroll_point(0);
-  .print("Got control points").
+  .goto(F).
 
-
-+target_reached(T): patrolling & team(200) 
-  <-
-  .print("AMMOPACK!");
-  .reload;
-  ?patroll_point(P);
-  -+patroll_point(P+1);
-  -target_reached(T).
-
-+patroll_point(P): total_control_points(T) & P<T 
-  <-
-  ?control_points(C);
-  .nth(P,C,A);
-  .goto(A).
-
-+patroll_point(P): total_control_points(T) & P==T
-  <-
-  -patroll_point(P);
-  +patroll_point(0).
-
+/* Visualizo un enemigo */
++enemies_in_fov(_, _, _, _, _, Position)
+	<-
+	.look_at(Position);
+    .shoot(3, Position);
+	.abolish(enemies_in_fov(_,_,_,_,_,_)).
 
 
 /* ESTRATEGIA DE PAQUETES DE SALUD */
