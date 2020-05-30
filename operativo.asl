@@ -1,14 +1,21 @@
-//TEAM_AXIS
-
-+flag (F): team(200) 
+/* Creencia que se dispara cuando se inicia la partida */
++flag(F): team(200)
   <-
-  .create_control_points(F,25,3,C);
-  +control_points(C);
-  .length(C,L);
-  +total_control_points(L);
-  +patrolling;
-  +patroll_point(0);
-  .print("Got control points").
+  !generarPatrulla.
+
+
+/* ESTRATEGIA DE PATRULLA EN ROMBO (EXTERIOR) */
+/* Generamos unos puntos de control en rombo */
++!generarPatrulla
+	<-
+	?flag(F);
+	.circuloInterior(F, C);
+	+control_points(C);
+	.length(C, L);
+	+total_control_points(L);
+	+patrolling;
+	+patroll_point(0).
+
 
 
 +target_reached(T): patrolling & team(200) 
@@ -68,6 +75,8 @@
 /* Visualizo un enemigo y no he avisado al General */	
 +enemies_in_fov(_, _, _, _, _, Position): not colmena(_) & not atacando
 	<-
+	.get_service("general");
+	.wait(500);
 	?general(General);
 	.send(General, tell, solicitudDeInstrucciones(Position));
 	// Mientras espera ordenes, ataca
@@ -81,13 +90,14 @@
 +enemies_in_fov(_, _, _, _, _, Position)
 	<-
 	.look_at(Position);
-    .shoot(3, Position);
+    .shoot(5, Position);
 	.abolish(enemies_in_fov(_,_,_,_,_,_)).
 	
 +objetivoLocalizado
 	<-	
 	.print("He visualizado al enemigo.");
 	.get_service("general");
+	.wait(500);
 	?general(General);
 	.send(General, tell, solicitudDeInstrucciones(Position));
 	.look_at(Position);
@@ -126,4 +136,4 @@
 	<-
 	-atacando;
 	// Volvemos a generar las coordenadas de la patrulla en rombo (por si se ha movido la bandera)
-	.generarPatrulla.
+	!generarPatrulla.

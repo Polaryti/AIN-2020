@@ -7,7 +7,7 @@ from spade.message import Message
 from pygomas.bditroop import BDITroop
 from pygomas.bdisoldier import BDISoldier
 from pygomas.bdimedic import BDIMedic
-from pygomas.bdifieldop import BDIFieldop
+from pygomas.bdifieldop import BDIFieldOp
 from agentspeak import Actions
 from agentspeak import grounded
 from agentspeak.stdlib import actions 
@@ -19,6 +19,15 @@ class BDIGeneral(BDISoldier):
 
     def add_custom_actions(self, actions):
         super().add_custom_actions(actions)
+        
+    @actions.add_function(".delete", (int, tuple, ))
+    def _delete(p, l):
+        if p==0:
+            return l[1:]
+        elif p == len(l) -1:
+            return l[:p]
+        else:
+            return l[0:p] + l[p+1:]
 
     @actions.add_function(".medicoMasCerca", (tuple, tuple))
     def _medico_mas_cercano(pos_sol, posiciones_agentes):
@@ -166,7 +175,7 @@ class SoldadoPropio(BDISoldier):
         return: La lista de puntos de patrulla en circulo interior.
         '''
         # Distancia de creación del círculo
-        distancia_de_circulo = 10
+        distancia_de_circulo = 15
 
         punto_A = [posicion_bandera[0] - distancia_de_circulo, posicion_bandera[1], posicion_bandera[2]]
         punto_B = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] - distancia_de_circulo]
@@ -184,7 +193,7 @@ class SoldadoPropio(BDISoldier):
         return: La lista de puntos de patrulla en circulo exterior.
         '''
         # Distancia de creación del círculo
-        distancia_de_circulo = 20
+        distancia_de_circulo = 15
 
         punto_A = [posicion_bandera[0] - distancia_de_circulo, posicion_bandera[1], posicion_bandera[2]]
         punto_B = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] - distancia_de_circulo]
@@ -194,10 +203,10 @@ class SoldadoPropio(BDISoldier):
         return tuple([tuple(punto_A), tuple(punto_B), tuple(punto_C), tuple(punto_D)])
 
 
-class MedicoPropip(BDIMedic):
+class MedicoPropio(BDIMedic):
     def add_custom_actions(self, actions):
         super().add_custom_actions(actions)
-        
+"""
     @actions.add_function(".circuloInterior", (tuple))
     def _circuloInterior(posicion_bandera):
         '''
@@ -232,12 +241,12 @@ class MedicoPropip(BDIMedic):
         punto_D = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] + distancia_de_circulo]
 
         return tuple([tuple(punto_A), tuple(punto_B), tuple(punto_C), tuple(punto_D)])
+"""
 
-
-class SoldadoPropio(BDISoldier):
+class OperativoPropio(BDIFieldOp):
     def add_custom_actions(self, actions):
         super().add_custom_actions(actions)
-        
+"""
     @actions.add_function(".circuloInterior", (tuple))
     def _circuloInterior(posicion_bandera):
         '''
@@ -272,3 +281,4 @@ class SoldadoPropio(BDISoldier):
         punto_D = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] + distancia_de_circulo]
 
         return tuple([tuple(punto_A), tuple(punto_B), tuple(punto_C), tuple(punto_D)])
+"""

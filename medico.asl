@@ -1,22 +1,24 @@
-/*
-	Autores: Antoni Mestre Gascón & Mario Campos Mocholí
-	Clase: Medico
-	Estrategia: Defensa (AXIS)
-		Este tipo de médico siempre se quedara cerca de la bandera generando
-		paquetes y cuando un soldado solicite ayude, se la dara.
-*/
-
-+flag (F): team(200) 
+/* Creencia que se dispara cuando se inicia la partida */
++flag(F): team(200)
   <-
-  .create_control_points(F, 20, 5, C);
-  +control_points(C);
-  .length(C, L);
-  +total_control_points(L);
-  +creando_reservas; // Creencia que indica que el agente está en ESTADO = Patrullando y creando paquetes
-  +patroll_point(0).
+  !generarPatrulla.
 
 
-+target_reached(T): creando_reservas & team(200) 
+/* ESTRATEGIA DE PATRULLA EN ROMBO (EXTERIOR) */
+/* Generamos unos puntos de control en rombo */
++!generarPatrulla
+	<-
+	?flag(F);
+	.circuloInterior(F, C);
+	+control_points(C);
+	.length(C, L);
+	+total_control_points(L);
+	+patrolling;
+	+patroll_point(0).
+
+
+
++target_reached(T): patrolling & team(200) 
   <-
   .print("Creado un paquete de salud.");
   .cure;
@@ -24,13 +26,13 @@
   -+patroll_point(P + 1);
   -target_reached(T).
 
-+patroll_point(P): total_control_points(T) & P < T 
++patroll_point(P): total_control_points(T) & P<T 
   <-
   ?control_points(C);
-  .nth(P, C, A);
+  .nth(P,C,A);
   .goto(A).
 
-+patroll_point(P): total_control_points(T) & P == T
++patroll_point(P): total_control_points(T) & P==T
   <-
   -patroll_point(P);
   +patroll_point(0).
@@ -71,11 +73,13 @@
 /* Visualizo un enemigo y no he avisado al General */	
 +enemies_in_fov(_, _, _, _, _, Position): not colmena(_) & not atacando
 	<-
+	.get_service("general");
+	.wait(500);
 	?general(General);
 	.send(General, tell, solicitudDeInstrucciones(Position));
 	// Mientras espera ordenes, ataca
 	.look_at(Position);
-    .shoot(3, Position);
+    .shoot(5, Position);
 	.abolish(enemies_in_fov(_,_,_,_,_,_));
 	// Para no sobrecargar al General
 	.wait(1000).
@@ -84,13 +88,14 @@
 +enemies_in_fov(_, _, _, _, _, Position)
 	<-
 	.look_at(Position);
-    .shoot(3, Position);
+    .shoot(5, Position);
 	.abolish(enemies_in_fov(_,_,_,_,_,_)).
 	
 +objetivoLocalizado
 	<-	
 	.print("He visualizado al enemigo.");
 	.get_service("general");
+	.wait(500);
 	?general(General);
 	.send(General, tell, solicitudDeInstrucciones(Position));
 	.look_at(Position);
@@ -129,4 +134,4 @@
 	<-
 	-atacando;
 	// Volvemos a generar las coordenadas de la patrulla en rombo (por si se ha movido la bandera)
-	.generarPatrulla.
+	!generarPatrulla.

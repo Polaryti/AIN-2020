@@ -1,0 +1,3 @@
+pygomas manager -j pemargar_manager@gtirouter.dsic.upv.es -m map_11 -sj pemargar_service@gtirouter.dsic.upv.es -np 20
+pygomas run -g pygomas.json
+pygomas render

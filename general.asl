@@ -2,8 +2,7 @@
 
 +flag (F): team(200) 
   <-
-  .register_service("general");
-  .goto(F).
+  .register_service("general").
 
 /* Visualizo un enemigo */
 +enemies_in_fov(_, _, _, _, _, Position)
@@ -18,18 +17,19 @@
 +solicitudDeSalud(Pos)[source(A)]: not solicitandoAyuda
 	<-
 	+solicitandoAyuda;
-	.myMedics(M);
+	?myMedics(M);
 	-+medicoPOS([]);
 	-+medicoID([]);
 	.send(M, tell, solicitudDeSalud(Pos));
 	.wait(900);
-	!!elegirMedico.
+	!!elegirMedico(Pos).
 
 
 /* Concateno la posición y el ID de los médicos que responden */
 +respuestaVida(Pos)[source(A)]: solicitandoAyuda
 	<-
 	.print("Recibo propuesta.");
+	.get_medics;
 	?medicoPOS(B);
 	.concat(B, [Pos], B1); -+medicoPOS(B1);
 	?medicoID(Ag);
@@ -39,13 +39,15 @@
 
 /* PLANES */
 /* Plan para elegir el médico más cercano */
-+!elegirMedico: medicoPOS(Bi) & medicoID(Ag)
++!elegirMedico(Pos): medicoPOS(Bi) & medicoID(Ag)
 	<-
 	.print("Selecciono el mejor: ", Bi, Ag);
-	.medicoMasCerca(Bi, medico);  // Guarda en medico la posición del medico elegido
-	.nth(medico, Ag, A);
+	?medicoPOS(Bi);
+	?medicoID(Ag);
+	.medicoMasCerca(Pos,Bi, Medico);  // Guarda en medico la posicion del medico elegido
+	.nth(Medico, Ag, A);
 	.send(A, tell, solicitudAceptad);
-	.delete(medico, Ag, Ag1);
+	.delete(Medico, Ag, Ag1);
 	.send(Ag1, tell, solicitudDenegada);
 	-+medicoPOS([]);
 	-+medicoID([]);
@@ -65,12 +67,13 @@
 +solicitudDeMunicion(Pos)[source(A)]: not solicitandoAyuda
 	<-
   +solicitandoAyuda;
-  .myFieldops(M);
+  .get_fieldops;
+  ?myFieldops(M);
 	-+operativoPOS([]);
 	-+operativoID([]);
 	.send(M, tell, solicitudDeMunicion(Pos));
 	.wait(900);
-  !!elegirOperativo.
+  !!elegirOperativo(Pos).
 
 
 /* Concateno la posición y el ID de los operativos que responden */
@@ -86,13 +89,13 @@
 
 /* PLANES */
 /* Plan para elegir el operativo más cercano */
-+!elegirOperativo: operativoPOS(Bi) & operativoID(Ag)
++!elegirOperativo(Pos): operativoPOS(Bi) & operativoID(Ag)
 	<-
 	.print("Selecciono el mejor: ", Bi, Ag);
-	.operativoMasCerca(Bi, medico);  // Guarda en operativo la posición del operativo elegido
-	.nth(operativo, Ag, A);
+	.operativoMasCerca(Pos, Bi, Operativo);  // Guarda en operativo la posicion del operativo elegido
+	.nth(Operativo, Ag, A);
 	.send(A, tell, solicitudAceptad);
-	.delete(operativo, Ag, Ag1);
+	.delete(A, Ag, Ag1);
 	.send(Ag1, tell, solicitudDenegada);
 	-+operativoPOS([]);
 	-+operativoID([]);
@@ -104,37 +107,6 @@
 	.print("Ningún operativo puede ayudar.");
 	-solicitandoAyuda.
 	
-
-
-/* ESTRATEGIA PARA IR EN COLMENA A POR UN ENEMIGO */
-/*Recepción de la solicitude de instrucciones*/
-+solicitudDeInstrucciones(Pos)[source(A)]: not solicitandoAyuda
-	<-
-	//+D=[]; <- ¿Que hace esto?
-	/*	Faltaria modificar agentes más cercanos para que devuelva
-		sólo 1 o 2 personas de cada tipo */
-	+solicitandoAyuda;
-	// Obtiene los médicos más cercanos
-	// TODO: Comunicarse con los médicos y decirle al médico más cercano que vaya ("send(Medico, tell, colmena(Pos))")
-	.get_medics;
-	?myMedics(M);
-	.agentesMasCercanos(Pos,M,R);
-	.concat(D,R,D);
-	// Obtiene los operativos más cercanos
-	// TODO: Comunicarse con los operativos y decirle al operativo más cercano que vaya ("send(Operativo, tell, colmena(Pos))")
-	.get_fieldops;
-	?myFieldops(F);
-	.agentesMasCercanos(Pos,F,R);
-	.concat(D,R,D);
-	// Obtiene los soldados más cercanos
-	// TODO: Comunicarse con los soldados y decirle a los soldados más cercanos que vayan ("send(Soldados, tell, colmena(Pos))")
-	.get_backups;
-	?myBackups(B);
-	.agentesMasCercanos(Pos,B,R);
-	.concat(D,R,D);
-	
-	.send(D,tell, colmena(Pos));
-	-solicitandoAyuda.
 
 
 /*COLMENA*/
@@ -204,34 +176,41 @@
 
 /* PLANES */
 /* Plan para elegir el médico más cercano */
-+!elegirEquipo(Pos)
++!elegirEquipo(Pos) 
 	<-
 	?medicoPOS(Ml);
 	?medicoID(Mi);
-	.agentesMasCercanos1(Pos, Ml, medico);  // Guarda en medico la posición del medico elegido
-	.nth(medico, Mi, A);
+	.agentesMasCercanos1(Pos, Ml, Medico);  // Guarda en medico la posición del medico elegido	
+	.nth(0, Medico, AuxM);
+	.nth(AuxM, Mi, A);
 	.send(A, tell, solicitudAceptadaC(Pos));
-	.delete(medico, Mi, Ag1);
+	.delete(AuxM, Fi, Ag1);
 	.send(Ag1, tell, solicitudDenegadaC);
 	-+medicoPOS([]);
 	-+medicoID([]);
 	
 	?operaPOS(Fl);
 	?operaID(Fi);
-	.agentesMasCercanos1(Pos, Fl, fieldOp);  // Guarda en medico la posición del medico elegido
-	.nth(fieldOp, Fi, A);
+	.agentesMasCercanos1(Pos, Fl, FieldOp);  // Guarda en medico la posición del medico elegido
+	.nth(0, FieldOp, AuxF);
+	.nth(AuxF, Fi, A);
 	.send(A, tell, solicitudAceptadaC(Pos));
-	.delete(fieldOp, Fi, Ag1);
+	.delete(AuxF, Fi, Ag1);
 	.send(Ag1, tell, solicitudDenegadaC);
 	-+operaPOS([]);
 	-+operaID([]);
 	
 	?soldadoPOS(Sl);
 	?soldadoID(Si);
-	.agentesMasCercanos2(Pos, Sl, soldado);  // Guarda en medico la posición del medico elegido
-	.nth(soldado, Si, A);
+	.agentesMasCercanos2(Pos, Sl, Soldado);  // Guarda en medico la posición del medico elegido
+	.nth(0, Soldado, Aux1);
+	.nth(1, Soldado, Aux2);
+	.nth(Aux1, Si, A);
+	.nth(Aux1, Si, B);
 	.send(A, tell, solicitudAceptadaC(Pos));
-	.delete(soldado, Si, Ag1);
+	.send(B, tell, solicitudAceptadaC(Pos));
+	.delete(Aux1, Fi, Ag1);	
+	.delete(Aux2, Fi, Ag1);
 	.send(Ag1, tell, solicitudDenegadaC);
 	-+soldadoPOS([]);
 	-+soldadoID([]);

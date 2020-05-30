@@ -56,6 +56,7 @@
 	-+medicoPOS([]);
 	-+medicoID([]);
 	.get_service("general");
+	.wait(500);
 	?general(General);
 	?position(Pos);
 	.send(General, tell, solicitudDeSalud(Pos));
@@ -82,6 +83,7 @@
 	-+operativoPOS([]);
 	-+operativoID([]);
 	.get_service("general");
+	.wait(500);
 	?general(General);
 	?position(Pos);
 	.send(General, tell, solicitudDeMunicion(Pos));
@@ -95,11 +97,13 @@
 /* Visualizo un enemigo y no he avisado al General */	
 +enemies_in_fov(_, _, _, _, _, Position): not colmena(_) & not atacando
 	<-
+	.get_service("general");
+	.wait(500);
 	?general(General);
 	.send(General, tell, solicitudDeInstrucciones(Position));
 	// Mientras espera ordenes, ataca
 	.look_at(Position);
-    .shoot(3, Position);
+    .shoot(5, Position);
 	.abolish(enemies_in_fov(_,_,_,_,_,_));
 	// Para no sobrecargar al General
 	.wait(1000).
@@ -108,7 +112,7 @@
 +enemies_in_fov(_, _, _, _, _, Position)
 	<-
 	.look_at(Position);
-    .shoot(3, Position);
+    .shoot(5, Position);
 	.abolish(enemies_in_fov(_,_,_,_,_,_)).
 	
 +objetivoLocalizado
