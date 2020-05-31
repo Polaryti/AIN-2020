@@ -6,6 +6,13 @@
   !generarPatrulla.
 
 
+/* El agente gira mientras patrulla */
++rolling
+	<-
+	.turn(1);
+	.wait(100);
+	-+rolling.
+
 /* ESTRATEGIA DE PATRULLA EN ROMBO (EXTERIOR) */
 /* Generamos unos puntos de control en rombo */
 +!generarPatrulla
@@ -16,6 +23,7 @@
 	.length(C, L);
 	+total_control_points(L);
 	+patrolling;
+	+rolling;
 	+patroll_point(0).
 
 +target_reached(T): patrolling & team(200)
@@ -137,6 +145,7 @@
 +solicitudAceptadaC[source(A)]: not solicitudAceptadaC(_) & not atacando
 	<-
 	// Eliminamos las creencias de patrulla
+	-rolling;
 	-control_points(_);
 	-total_control_points(_);
 	-patrolling;
