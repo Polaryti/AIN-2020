@@ -100,7 +100,7 @@
 /* Visualizo un enemigo y no he avisado al General */	
 +enemies_in_fov(_, _, _, _, _, Position): not colmena(_) & not atacando
 	<-
-	.print("Soldado visualizando a un enemigo.)
+	.print("Soldado visualizando a un enemigo.")
 	.get_service("general");
 	.wait(500);
 	?general(General);

@@ -6,7 +6,7 @@
     "service_password": "secret",
     "axis": [
 		{
-            "rank": "BDISoldier",
+            "rank": "general.SoldadoPropio",
             "name": "axis_macammoc",
             "password": "secret",
             "amount": 4,

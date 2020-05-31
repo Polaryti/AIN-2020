@@ -16,7 +16,6 @@ from pygomas.ontology import HEALTH
 from pygomas.agent import LONG_RECEIVE_WAIT
 
 class BDIGeneral(BDISoldier):
-
     def add_custom_actions(self, actions):
         super().add_custom_actions(actions)
         
@@ -140,7 +139,7 @@ class BDIGeneral(BDISoldier):
     def _distancia(p1, p2):
         return ((p1[0]-p2[0])**2+(p1[2]-p2[2])**2)**0.5
     
-      @actions.add_function(".circuloInterior", (tuple))
+    @actions.add_function(".circuloInterior", (tuple))
     def _circuloInterior(posicion_bandera):
         '''
         Recibe un parametro: La posicición de la bandera.
@@ -192,3 +191,7 @@ class BDIGeneral(BDISoldier):
                 cont +=1 
             ret += tuple(punto)
         return tuple(ret)
+
+class SoldadoPropio(BDISoldier):
+    def add_custom_actions(self, actions):
+        super().add_custom_actions(actions)

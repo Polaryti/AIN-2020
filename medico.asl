@@ -122,7 +122,7 @@
 +solicitudAceptadaC[source(A)]: not solicitudAceptadaC(_) & not atacando
 	<-
 	// Eliminamos las creencias de patrulla
-	.rolling;
+	+rolling;
 	-control_points(_);
 	-total_control_points(_);
 	-patrolling;
