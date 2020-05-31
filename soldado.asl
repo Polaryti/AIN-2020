@@ -1,10 +1,7 @@
-// SOLDADO EN DEFENSA (AXIS)
-
 /* Creencia que se dispara cuando se inicia la partida */
 +flag(F): team(200)
   <-
   !generarPatrulla.
-
 
 /* El agente gira mientras patrulla */
 +rolling
@@ -13,10 +10,12 @@
 	.wait(100);
 	-+rolling.
 
+
 /* ESTRATEGIA DE PATRULLA EN ROMBO (EXTERIOR) */
 /* Generamos unos puntos de control en rombo */
 +!generarPatrulla
 	<-
+	.print("Soldado empezando a patrullar.");
 	?flag(F);
 	.circuloExterior(F, C);
 	+control_points(C);
@@ -44,8 +43,6 @@
   +patroll_point(0).
   
 
-
-
 /* ESTRATEGIA DE PAQUETES DE SALUD */
 /* Creencia que anula la estrategia */
 +health(H): H >= 20 & solicitandoSalud
@@ -60,7 +57,7 @@
 /* Solicitud al general */
 +solicitandoSalud
 	<-
-	.print("Agente solicitando un paquete de vida.");
+	.print("Soldado solicitando paquete de salud.");
 	-+medicoPOS([]);
 	-+medicoID([]);
 	.get_service("general");
@@ -87,7 +84,7 @@
 /* Solicitud al general */
 +solicitandoMunicion
 	<-
-	.print("Agente solicitando un paquete de munición.");
+	.print("Soldado solicitando paquete de munición.");
 	-+operativoPOS([]);
 	-+operativoID([]);
 	.get_service("general");
@@ -98,20 +95,15 @@
 	.wait(1500).
 
 
-	
-
-
 //* ESTRATEGIA PARA IR EN COLMENA A POR UN ENEMIGO */
 /* Visualizo un enemigo y no he avisado al General */	
 +enemies_in_fov(_, _, _, _, _, Position): not colmena(_) & not atacando
 	<-
+	.print("Soldado visualizando a un enemigo.)
 	.get_service("general");
 	.wait(500);
 	?general(General);
 	.send(General, tell, solicitudDeInstrucciones(Position));
-	// Mientras espera ordenes, ataca
-	.look_at(Position);
-    .shoot(5, Position);
 	.abolish(enemies_in_fov(_,_,_,_,_,_));
 	// Para no sobrecargar al General
 	.wait(1000).
@@ -122,7 +114,9 @@
 	.look_at(Position);
     .shoot(5, Position);
 	.abolish(enemies_in_fov(_,_,_,_,_,_)).
-	
+
+// ¿Esto que hace si nunca se dispara?
+/*
 +objetivoLocalizado
 	<-	
 	.print("He visualizado al enemigo.");
@@ -130,27 +124,27 @@
 	?general(General);
 	.send(General, tell, solicitudDeInstrucciones(Position));
 	.look_at(Position);
-    .shoot(10, Position);
+    .shoot(3, Position);
 	.wait(1000).
+*/
 	
 +solicitudDeColmena(Pos)[source(A)]: not (ayudandoc(_))
 	<-
+	-print("Soldado recibiendo solicitud de colmena.");
 	?position(MiPos);
 	.send(A, tell, respuestaColmenaS(MiPos));
 	+ayudandoc(Pos);
-	-solicitudDeColmena(_);
-	.print("enviada propuesta de apoyo").
+	-solicitudDeColmena(_).
 	
 /* Me aceptan la respuesta de solicitud de apoyo */
 +solicitudAceptadaC[source(A)]: not solicitudAceptadaC(_) & not atacando
 	<-
-	// Eliminamos las creencias de patrulla
+	.print("Soldado aceptando la solicitud de colmena.");
 	-rolling;
 	-control_points(_);
 	-total_control_points(_);
 	-patrolling;
 	-patroll_point(_);
-
 	+atacando;
 	.goto(Pos);
 	-solicitudAceptadaC(_).
@@ -158,12 +152,12 @@
 /* Me rechazan la respuesta de solicitud de ayuda */
 +solicitudDenegadaC[source(A)]: ayudandoc(Pos)
 	<-
-	.print("Nada, a seguir dándo vueltas");
+	.print("Soldado rechazando la solicitud de colmena.");
 	-ayudandoc(Pos).
 	
 /* Llego al objetivo del ataque en colmena */
 +target_reached(Pos): atacando
 	<-
+	.print("Soldado ha llegado a la ubicación del enemigo.");
 	-atacando;
-	// Volvemos a generar las coordenadas de la patrulla en rombo (por si se ha movido la bandera)
 	!generarPatrulla.

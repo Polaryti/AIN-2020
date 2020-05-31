@@ -2,6 +2,7 @@
 
 +flag (F): team(200) 
   <-
+  .print("General se queda en la base.");
   .register_service("general").
 
 /* Visualizo un enemigo */
@@ -16,6 +17,7 @@
 /* Recibo solictud de ayuda */
 +solicitudDeSalud(Pos)[source(A)]: not solicitandoAyuda
 	<-
+	.print("General ha recibido una solicitud de vida.");
 	+solicitandoAyuda;
 	?myMedics(M);
 	-+medicoPOS([]);
@@ -28,7 +30,7 @@
 /* Concateno la posición y el ID de los médicos que responden */
 +respuestaVida(Pos)[source(A)]: solicitandoAyuda
 	<-
-	.print("Recibo propuesta.");
+	.print("General recibe respuesta de un medico.");
 	.get_medics;
 	?medicoPOS(B);
 	.concat(B, [Pos], B1); -+medicoPOS(B1);
@@ -56,7 +58,7 @@
 /* Plan para cuando no hay ningún médico que pueda ayudar */
 +!elegirMedico: not (medicoPOS(Bi))
 	<-
-	.print("Ningún médico puede ayudar.");
+	.print("General no ha recibido respuesta de ningun medico.");
 	-solicitandoAyuda.
 	
 
@@ -66,20 +68,21 @@
 /* Recibo solictud de ayuda */
 +solicitudDeMunicion(Pos)[source(A)]: not solicitandoAyuda
 	<-
-  +solicitandoAyuda;
-  .get_fieldops;
-  ?myFieldops(M);
+	.print("General ha recibido una solicitud de munición.");
+  	+solicitandoAyuda;
+  	.get_fieldops;
+  	?myFieldops(M);
 	-+operativoPOS([]);
 	-+operativoID([]);
 	.send(M, tell, solicitudDeMunicion(Pos));
 	.wait(900);
-  !!elegirOperativo(Pos).
+ 	!!elegirOperativo(Pos).
 
 
 /* Concateno la posición y el ID de los operativos que responden */
 +respuestaMunicion(Pos)[source(A)]: solicitandoAyuda
 	<-
-	.print("Recibo propuesta.");
+	.print("General ha recibido una respuesta de operativo.");
 	?operativoPOS(B);
 	.concat(B, [Pos], B1); -+operativoPOS(B1);
 	?operativoID(Ag);
