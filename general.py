@@ -209,7 +209,7 @@ class SoldadoPropio(BDISoldier):
             sx=1
             sz=1
             cont = 2
-            while !(self.map.can_walk(punto[0],punto[2])):
+            while not (self.map.can_walk(punto[0],punto[2])):
                 if cont % 2 == 1:
                     punto[0] = punto[0] + sx * int(cont / 2)
                     sx *= -1
