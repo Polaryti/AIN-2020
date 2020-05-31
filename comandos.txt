@@ -1,3 +1,9 @@
-pygomas manager -j pemargar_manager@gtirouter.dsic.upv.es -m map_11 -sj pemargar_service@gtirouter.dsic.upv.es -np 20
-pygomas run -g pygomas.json
-pygomas render
+PERE
+Manager: pygomas manager -j pemargar_manager@gtirouter.dsic.upv.es -m map_11 -sj pemargar_service@gtirouter.dsic.upv.es -np 20
+Agentes: pygomas run -g pygomas.json
+Render: pygomas render
+
+MARIO
+Manager: pygomas manager -j manager_macammoc@gtirouter.dsic.upv.es -m map_11 -sj service_macammoc@gtirouter.dsic.upv.es -np 20
+Agentes: pygomas run -g pygomas.json
+Render: pygomas render

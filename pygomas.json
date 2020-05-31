@@ -6,21 +6,21 @@
     "service_password": "secret",
     "axis": [
 		{
-            "rank": "general.SoldadoPropio",
+            "rank": "BDISoldier",
             "name": "axis_macammoc",
             "password": "secret",
             "amount": 4,
             "asl": "soldado.asl"
         },
         {
-            "rank": "general.MedicoPropio",
+            "rank": "BDIMedic",
             "name": "medic_axis_macammoc",
             "password": "secret",
 			"amount": 3,
             "asl": "medico.asl"
         },
          {
-            "rank": "general.OperativoPropio",
+            "rank": "BDIFieldOp",
             "name": "fieldop_axis_macammoc",
             "password": "secret",
 			"amount": 2,

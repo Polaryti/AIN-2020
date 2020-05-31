@@ -1,5 +1,0 @@
-- Estrategia defensa
-- Técnicas de coordinación - DONE
-- Servicio nuevo
-- Mejora de comportamiento
-- Acción interna - DONE

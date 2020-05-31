@@ -20,7 +20,7 @@ class BDIGeneral(BDISoldier):
     def add_custom_actions(self, actions):
         super().add_custom_actions(actions)
         
-    @actions.add_function(".delete", (int, tuple, ))
+    @actions.add_function(".delete", (int, tuple))
     def _delete(p, l):
         if p==0:
             return l[1:]
@@ -136,36 +136,10 @@ class BDIGeneral(BDISoldier):
 
         return tuple(res)
         
-    @actions.add_function(".distance", (tuple,tuple))
+    @actions.add_function(".distance", (tuple, tuple))
     def _distancia(p1, p2):
         return ((p1[0]-p2[0])**2+(p1[2]-p2[2])**2)**0.5
     
-    '''
-        Given Agent position and soldiers tuple, returns the best 
-        attack pattern by the moment.
-    '''
-    @actions.add_function(".gpunto", (tuple))
-    def _gpunto(pos):     
-        soldiers = self.soldiers_count
-        target = []
-
-        X,Z,Y = pos
-        if Y - X > 0:
-            X += 20
-        else:
-            X -= 20
-
-        target = [X,Z,Y]
-            
-        # /** TODO **/
-        return tuple(target)
-        
-
-
-
-class SoldadoPropio(BDISoldier):
-    def add_custom_actions(self, actions):
-        super().add_custom_actions(actions)
         
     @actions.add_function(".circuloInterior", (tuple))
     def _circuloInterior(posicion_bandera):
@@ -213,10 +187,11 @@ class SoldadoPropio(BDISoldier):
         return tuple([tuple(punto_A), tuple(punto_B), tuple(punto_C), tuple(punto_D)])
 
     def com_punto(self, punto):
-        sx=1
-        sz=1
+        sx = 1
+        sz = 1
         cont = 2
-        while !(self.map.can_walk(punto[0],punto[2])):
+
+        while not self.map.can_walk(punto[0],punto[2]):
             if cont % 2 == 1:
                 punto[0] = punto[0] + sx * int(cont / 2)
                 sx *= -1
@@ -224,84 +199,5 @@ class SoldadoPropio(BDISoldier):
                 punto[2] = punto[2] + sz * int(cont / 2)
                 sz *= -1
             cont += 1
-        return punto
 
-class MedicoPropio(BDIMedic):
-    def add_custom_actions(self, actions):
-        super().add_custom_actions(actions)
-"""
-    @actions.add_function(".circuloInterior", (tuple))
-    def _circuloInterior(posicion_bandera):
-        '''
-        Recibe un parametro: La posicición de la bandera.
-        
-        return: La lista de puntos de patrulla en circulo interior.
-        '''
-        # Distancia de creación del círculo
-        distancia_de_circulo = 10
-
-        punto_A = [posicion_bandera[0] - distancia_de_circulo, posicion_bandera[1], posicion_bandera[2]]
-        punto_B = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] - distancia_de_circulo]
-        punto_C = [posicion_bandera[0] + distancia_de_circulo, posicion_bandera[1], posicion_bandera[2]]
-        punto_D = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] + distancia_de_circulo]
-
-        return tuple([tuple(punto_A), tuple(punto_B), tuple(punto_C), tuple(punto_D)])
-
-
-    @actions.add_function(".circuloExterior", (tuple))
-    def _circulo_exterior(posicion_bandera):
-        '''
-        Recibe un parametro: La posicición de la bandera.
-        
-        return: La lista de puntos de patrulla en circulo exterior.
-        '''
-        # Distancia de creación del círculo
-        distancia_de_circulo = 20
-
-        punto_A = [posicion_bandera[0] - distancia_de_circulo, posicion_bandera[1], posicion_bandera[2]]
-        punto_B = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] - distancia_de_circulo]
-        punto_C = [posicion_bandera[0] + distancia_de_circulo, posicion_bandera[1], posicion_bandera[2]]
-        punto_D = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] + distancia_de_circulo]
-
-        return tuple([tuple(punto_A), tuple(punto_B), tuple(punto_C), tuple(punto_D)])
-"""
-
-class OperativoPropio(BDIFieldOp):
-    def add_custom_actions(self, actions):
-        super().add_custom_actions(actions)
-"""
-    @actions.add_function(".circuloInterior", (tuple))
-    def _circuloInterior(posicion_bandera):
-        '''
-        Recibe un parametro: La posicición de la bandera.
-        
-        return: La lista de puntos de patrulla en circulo interior.
-        '''
-        # Distancia de creación del círculo
-        distancia_de_circulo = 10
-
-        punto_A = [posicion_bandera[0] - distancia_de_circulo, posicion_bandera[1], posicion_bandera[2]]
-        punto_B = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] - distancia_de_circulo]
-        punto_C = [posicion_bandera[0] + distancia_de_circulo, posicion_bandera[1], posicion_bandera[2]]
-        punto_D = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] + distancia_de_circulo]
-
-        return tuple([tuple(punto_A), tuple(punto_B), tuple(punto_C), tuple(punto_D)])
-
-
-    @actions.add_function(".circuloExterior", (tuple))
-    def _circulo_exterior(posicion_bandera):
-        '''
-        Recibe un parametro: La posicición de la bandera.
-        
-        return: La lista de puntos de patrulla en circulo exterior.
-        '''
-        # Distancia de creación del círculo
-        distancia_de_circulo = 20
-
-        punto_A = [posicion_bandera[0] - distancia_de_circulo, posicion_bandera[1], posicion_bandera[2]]
-        punto_B = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] - distancia_de_circulo]
-        punto_C = [posicion_bandera[0] + distancia_de_circulo, posicion_bandera[1], posicion_bandera[2]]
-        punto_D = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] + distancia_de_circulo]
-
-        return tuple([tuple(punto_A), tuple(punto_B), tuple(punto_C), tuple(punto_D)])
-"""
+        return tuple(punto)

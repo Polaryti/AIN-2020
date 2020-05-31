@@ -3,25 +3,32 @@
   <-
   !generarPatrulla.
 
+/* El agente gira mientras patrulla */
++rolling
+	<-
+	.turn(1);
+	.wait(100);
+	-+rolling.
+
 
 /* ESTRATEGIA DE PATRULLA EN ROMBO (EXTERIOR) */
 /* Generamos unos puntos de control en rombo */
 +!generarPatrulla
 	<-
+	.print("Medico empezando a patrullar.");
 	?flag(F);
 	.circuloInterior(F, C);
 	+control_points(C);
 	.length(C, L);
 	+total_control_points(L);
 	+patrolling;
+	+rolling;
 	+patroll_point(0).
 
 
 
 +target_reached(T): patrolling & team(200) 
   <-
-  .print("Creado un paquete de salud.");
-  .cure;
   ?patroll_point(P);
   -+patroll_point(P + 1);
   -target_reached(T).
@@ -52,6 +59,11 @@
 +solicitudAceptad[source(A)]: ayudando(A, Pos)
 	<-
 	.print("Ayudo al egente: ", A, "en la posicion: ", Pos);
+	-rolling;
+	-control_points(_);
+	-total_control_points(_);
+	-patrolling;
+	-patroll_point(_);
 	.goto(Pos).
 	
 /* Me rechazan la respuesta de solicitud de ayuda */
@@ -65,9 +77,8 @@
 	<-
 	.print("Paquete de salud para: ", A);
 	.cure;
-	?miPosition(P); // Esto no lo veo, falta algo
-	.goto(P);
-	-ayudando(A, Pos).
+	-ayudando(_, _);
+	!generarPatrulla.
 	
 /* ESTRATEGIA PARA IR EN COLMENA A POR UN ENEMIGO */
 /* Visualizo un enemigo y no he avisado al General */	
@@ -77,9 +88,6 @@
 	.wait(500);
 	?general(General);
 	.send(General, tell, solicitudDeInstrucciones(Position));
-	// Mientras espera ordenes, ataca
-	.look_at(Position);
-    .shoot(5, Position);
 	.abolish(enemies_in_fov(_,_,_,_,_,_));
 	// Para no sobrecargar al General
 	.wait(1000).
@@ -114,11 +122,11 @@
 +solicitudAceptadaC[source(A)]: not solicitudAceptadaC(_) & not atacando
 	<-
 	// Eliminamos las creencias de patrulla
+	.rolling;
 	-control_points(_);
 	-total_control_points(_);
 	-patrolling;
 	-patroll_point(_);
-
 	+atacando;
 	.goto(Pos);
 	-solicitudAceptadaC(_).
@@ -133,5 +141,4 @@
 +target_reached(Pos): atacando
 	<-
 	-atacando;
-	// Volvemos a generar las coordenadas de la patrulla en rombo (por si se ha movido la bandera)
 	!generarPatrulla.
