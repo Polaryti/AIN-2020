@@ -17,7 +17,8 @@
 	<-
 	.print("Soldado empezando a patrullar.");
 	?flag(F);
-	.circuloExterior(F, C);
+	.circuloExterior(F, Pini);
+	.comprobarPuntos(Pini,C);
 	+control_points(C);
 	.length(C, L);
 	+total_control_points(L);

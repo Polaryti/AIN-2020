@@ -182,11 +182,6 @@ class SoldadoPropio(BDISoldier):
         punto_C = [posicion_bandera[0] + distancia_de_circulo, posicion_bandera[1], posicion_bandera[2]]
         punto_D = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] + distancia_de_circulo]
 
-        punto_A = com_punto(punto_A)
-        punto_B = com_punto(punto_B)
-        punto_C = com_punto(punto_C)
-        punto_D = com_punto(punto_D)
-
         return tuple([tuple(punto_A), tuple(punto_B), tuple(punto_C), tuple(punto_D)])
 
 
@@ -205,26 +200,25 @@ class SoldadoPropio(BDISoldier):
         punto_C = [posicion_bandera[0] + distancia_de_circulo, posicion_bandera[1], posicion_bandera[2]]
         punto_D = [posicion_bandera[0], posicion_bandera[1], posicion_bandera[2] + distancia_de_circulo]
 
-        punto_A = com_punto(punto_A)
-        punto_B = com_punto(punto_B)
-        punto_C = com_punto(punto_C)
-        punto_D = com_punto(punto_D)
-
         return tuple([tuple(punto_A), tuple(punto_B), tuple(punto_C), tuple(punto_D)])
 
-    def com_punto(self, punto):
-        sx=1
-        sz=1
-        cont = 2
-        while !(self.map.can_walk(punto[0],punto[2])):
-            if cont % 2 == 1:
-                punto[0] = punto[0] + sx * int(cont / 2)
-                sx *= -1
-            else:
-                punto[2] = punto[2] + sz * int(cont / 2)
-                sz *= -1
-            cont += 1
-        return punto
+    @actions.add_function(".comprobarPuntos", (tuple))
+    def _com_punto(puntos):
+        ret = []
+        for punto in puntos:
+            sx=1
+            sz=1
+            cont = 2
+            while !(self.map.can_walk(punto[0],punto[2])):
+                if cont % 2 == 1:
+                    punto[0] = punto[0] + sx * int(cont / 2)
+                    sx *= -1
+                else:
+                    punto[2] = punto[2] + sz * int(cont / 2)
+                    sz *= -1
+                cont +=1 
+            ret += tuple(punto)
+        return tuple(ret)
 
 class MedicoPropio(BDIMedic):
     def add_custom_actions(self, actions):

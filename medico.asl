@@ -9,8 +9,8 @@
 +!generarPatrulla
 	<-
 	?flag(F);
-	.circuloInterior(F, C);
-	+control_points(C);
+	.circuloInterior(F, Pini);
+	.comprobarPuntos(Pini,C);
 	.length(C, L);
 	+total_control_points(L);
 	+patrolling;
