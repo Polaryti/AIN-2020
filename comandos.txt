@@ -1,5 +1,5 @@
 PERE
-Manager: pygomas manager -j pemargar_manager@gtirouter.dsic.upv.es -m map_11 -sj pemargar_service@gtirouter.dsic.upv.es -np 20
+Manager: pygomas manager -j pemargar_manager@gtirouter.dsic.upv.es -m map_01 -sj pemargar_service@gtirouter.dsic.upv.es -np 20
 Agentes: pygomas run -g pygomas.json
 Render: pygomas render
 

@@ -57,7 +57,7 @@
 	.print("enviada propuesta de ayuda").
 	
 /* Me aceptan la respuesta de solicitud de ayuda */
-+solicitudAceptad[source(A)]: ayudando(A, Pos)
++solicitudAceptada[source(A)]: ayudando(A, Pos)
 	<-
 	.print("Ayudo al egente: ", A, "en la posicion: ", Pos);
 	-control_points(_);
