@@ -1,12 +1,12 @@
 {
     "host": "gtirouter.dsic.upv.es",
-    "manager": "pemargar_manager",
+    "manager": "manager_macammoc",
     "manager_password": "secret",
-    "service": "pemargar_service",
+    "service": "service_macammoc",
     "service_password": "secret",
     "axis": [
 		{
-            "rank": "general.SoldadoPropio",
+            "rank": "agentes.SoldadoPropio",
             "name": "axis_macammoc",
             "password": "secret",
             "amount": 5,
@@ -27,7 +27,7 @@
             "asl": "operativo.asl"
         },
 		{
-            "rank": "general.BDIGeneral",
+            "rank": "agentes.BDIGeneral",
             "name": "general_axis_macammoc",
             "password": "secret",
             "asl": "general.asl"

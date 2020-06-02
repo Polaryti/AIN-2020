@@ -1,12 +1,15 @@
-//TEAM_AXIS
+/*
+	Autores: Antoni Mestre Gascón & Mario Campos Mocholí
+	Nombre: General
+*/
 
+/* Creencia que se dispara cuando se inicia la partida */
 +flag (F): team(200) 
-  <-
-  .register_service("general");
-  .get_medics;
-  .get_backups;
-  .get_fieldops;
-  .print("General se queda en la base.").
+	<-
+	.register_service("general");
+	.get_medics;
+	.get_backups;
+	.get_fieldops.
 
 /* El agente gira */
 +rolling
@@ -19,15 +22,27 @@
 +enemies_in_fov(_, _, _, _, _, Position)
 	<-
 	.look_at(Position);
-    .shoot(3, Position);
-	.abolish(enemies_in_fov(_,_,_,_,_,_)).
+	
+	+puedoDisparar(True);
+	.while (?friends_in_fov(_,_,_,_,_,AmigoPos) & ?puedoDisparar(C) & C) {
+		?position(MiPosicion);
+		.fuegoAmigo(MiPosicion, Position, AmigoPos, Aux);
+		if (Aux) {
+			-+puedoDisparar(False);
+		}
+	}
+	
+	if (?puedoDisparar(B) & B) {
+		.shoot(5, Position);
+	}
+	
+	-puedoDisparar(_).
 
 
 /* ESTRATEGIA DE PAQUETES DE SALUD */
 /* Recibo solictud de ayuda */
 +solicitudDeSalud(Pos)[source(A)]: not solicitandoAyuda & not eligiendoMedico
 	<-
-	.print("General ha recibido una solicitud de vida.");
 	+solicitandoAyuda;
 	?myMedics(M);
 	+medicoPOS([]);
@@ -41,7 +56,6 @@
 +respuestaVida(Pos)[source(A)]: solicitandoAyuda & not eligiendoMedico
 	<-
 	.wait(500);
-	.print("General recibe respuesta de un medico.");
 	?medicoPOS(B);
 	.concat(B, [Pos], B1); -+medicoPOS(B1);
 	?medicoID(Ag);
@@ -57,7 +71,6 @@
 	.wait(500);
 	?medicoPOS(Bi);
 	?medicoID(Ag);
-	.print("Selecciono el mejor: ", Bi, Ag);
 	.length(Bi, LB);
 	if (LB > 0) {
 		.medicoMasCerca(Pos,Bi, Medico);  // Guarda en Medico la posicion del medico elegido
@@ -81,7 +94,6 @@
 +solicitudDeMunicion(Pos)[source(A)]: not solicitandoMun & not eligiendoOp
 	<-
 	.wait(500);
-	.print("General ha recibido una solicitud de municion.");
   	+solicitandoMun;
   	.get_fieldops;
   	?myFieldops(M);
@@ -96,7 +108,6 @@
 +respuestaMunicion(Pos)[source(A)]: solicitandoMun & not eligiendoOp
 	<-
 	.wait(500);
-	.print("General ha recibido una respuesta de operativo.");
 	?operativoPOS(B);
 	.concat(B, [Pos], B1); -+operativoPOS(B1);
 	?operativoID(Ag);
@@ -112,7 +123,6 @@
 	.wait(500);
 	?operativoPOS(BiO);
 	?operativoID(AgO);
-	.print("Selecciono el mejor: ", BOi, AgO);
 	.length(BiO, LO);
 	if (LO > 0) {
 		.operativoMasCerca(Pos, BiO, Operativo);  // Guarda en operativo la posicion del operativo elegido
@@ -132,7 +142,6 @@
 /* Plan para cuando no hay ningun operativo que pueda ayudar */
 +!elegirOperativo: not (operativoPOS(Bi))
 	<-
-	.print("Ningún operativo puede ayudar.");
 	-solicitandoMun.
 	
 
@@ -141,7 +150,6 @@
 /* Recibo solictud de apoyo */
 +solicitudDeColmena(Pos)[source(A)]: not solicitandoApoyo & not creandoEquipo
 	<-
-	.print("General ha recibido una solicitud de colmena.");
 	+medicoP([]);
 	+medicoI([]);
 	+operaP([]);
@@ -240,11 +248,3 @@
 	}
 	
 	-creandoEquipo.
-	
-/* Plan para cuando no hay ningún médico que pueda ayudar */
-/*
-+!elegirEquipo
-	<-
-	.print("La colmena no puede reunirse.");
-	-solicitandoAyuda.
-*/
